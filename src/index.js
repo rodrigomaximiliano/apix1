@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(morgan('dev'));
 app.use(express.json());
 
-
+app.use('/api', router);
 
 app.listen(PORT, () => {
     console.log(`Servidor en ejecución en el puerto ${PORT}`);
