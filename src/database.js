@@ -7,6 +7,3 @@ const properties = {
     database: 'rest-api'
 };
 
-const pool = mysqlConnection.createPool(properties);
-
-export { pool }; 
