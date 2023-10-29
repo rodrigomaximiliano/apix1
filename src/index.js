@@ -4,12 +4,12 @@ import { router } from './routes.js';
 
 const app = express();
 
-app.set('port', 3000); // Cambia 'app set' a 'app.set'
+app.set('port', 3000); 
 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(router);
 
 app.listen(app.get('port'), () => {
-  console.log(`Server on port ${app.get('port')}`); // Utiliza comillas inversas para la interpolación de cadenas
+  console.log(`Server on port ${app.get('port')}`); 
 });
