@@ -1,80 +1,80 @@
 import { pool } from './database.js';
 
 class LibrosController {
-    async getAll(req, res) {
-        try {
-            const [rows, fields] = await pool.execute('SELECT * FROM libros');
-            res.json(rows);
-        } catch (error) {
-            console.error('Error al obtener los libros:', error);
-            res.status(500).json({ error: 'Error al obtener los libros' });
-        }
+  async getAll(req, res) {
+    try {
+      const [result] = await pool.query('SELECT * FROM libros');
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ "Error": "No se encontraron los libros" });
     }
+  }
 
-    async getOne(req, res) {
-        const libroId = req.params.id;
-
-        try {
-            const [rows, fields] = await pool.execute('SELECT * FROM libros WHERE id = ?', [libroId]);
-
-            if (rows.length === 0) {
-                res.status(404).json({ mensaje: 'Libro no encontrado' });
-            } else {
-                res.json(rows[0]);
-            }
-        } catch (error) {
-            console.error('Error al obtener el libro:', error);
-            res.status(500).json({ error: 'Error al obtener el libro' });
-        }
+  async getOne(req, res) {
+    try {
+      const libro = req.body;
+      const [result] = await pool.query('SELECT * FROM libros WHERE isbn = ?', [libro.isbn]);
+      if (result.length > 0) {
+        res.json(result[0]);
+      } else {
+        res.status(404).json({ "Error": `No se encontraron los libros con el ISBN ${libro.isbn}` });
+      }
+    } catch (error) {
+      res.status(500).json({ "Error": "Ocurrió un error al obtener el libro" });
     }
+  }
 
-    async create(req, res) {
-        const { nombre, autor, categoria, año_publicacion, isbn } = req.body;
-
-        try {
-            const [result] = await pool.execute('INSERT INTO libros (nombre, autor, categoria, año_publicacion, isbn) VALUES (?, ?, ?, ?, ?)', [nombre, autor, categoria, año_publicacion, isbn]);
-
-            res.status(201).json({ mensaje: 'Libro creado con éxito', libroId: result.insertId });
-        } catch (error) {
-            console.error('Error al crear el libro:', error);
-            res.status(500).json({ error: 'Error al crear el libro' });
-        }
+  async add(req, res) {
+    try {
+      const libro = req.body;
+      const [result] = await pool.query('INSERT INTO libros(nombre, autor, categoria, año_publicacion, isbn) VALUES (?, ?, ?, ?, ?)', [libro.nombre, libro.autor, libro.categoria, libro.año_publicacion, libro.isbn]);
+      res.json({ "ID insertado": result.insertId, "message": "Libro agregado exitosamente" });
+    } catch (error) {
+      res.status(500).json({ "Error": "Error al agregar el libro" });
     }
+  }
 
-    async update(req, res) {
-        const libroId = req.params.id;
-        const { nombre, autor, categoria, año_publicacion, isbn } = req.body;
-
-        try {
-            const [result] = await pool.execute('UPDATE libros SET nombre = ?, autor = ?, categoria = ?, año_publicacion = ?, isbn = ? WHERE id = ?', [nombre, autor, categoria, año_publicacion, isbn, libroId]);
-
-            if (result.affectedRows === 0) {
-                res.status(404).json({ mensaje: 'Libro no encontrado' });
-            } else {
-                res.json({ mensaje: 'Libro actualizado con éxito' });
-            }
-        } catch (error) {
-            console.error('Error al actualizar el libro:', error);
-            res.status(500).json({ error: 'Error al actualizar el libro' });
-        }
+  async deleteISBN(req, res) {
+    try {
+      const libro = req.body;
+      const [result] = await pool.query('DELETE FROM libros WHERE isbn = ?', [libro.isbn]);
+      if (result.affectedRows > 0) {
+        res.json({ "message": `Libro con ISBN ${libro.isbn} eliminado exitosamente` });
+      } else {
+        res.status(404).json({ "Error": `No se encontró ningún libro con el ISBN ${libro.isbn}` });
+      }
+    } catch (error) {
+      res.status(500).json({ "Error": "Ocurrió un error al eliminar el libro" });
     }
+  }
 
-    async deleteByISBN(req, res) {
-        const ISBN = req.params.isbn;
-
-        try {
-            const [result] = await pool.execute('DELETE FROM libros WHERE isbn = ?', [ISBN]);
-
-            if (result.affectedRows === 0) {
-                res.status(404).json({ mensaje: 'Libro con ISBN no encontrado' });
-            } else {
-                res.json({ mensaje: 'Libro eliminado con éxito' });
-            }
-        } catch (error) {
-            console.error('Error al eliminar el libro por ISBN:', error);
-            res.status(500).json({ error: 'Error al eliminar el libro' });
-        }
+  async deleteID(req, res) {
+    try {
+      const libro = req.body;
+      const [result] = await pool.query('DELETE FROM libros WHERE id = ?', [libro.id]);
+      if (result.affectedRows > 0) {
+        res.json({ "message": `Libro con ID ${libro.id} eliminado exitosamente` });
+      } else {
+        res.status(404).json({ "Error": `No se encontró ningún libro con el ID ${libro.id}` });
+      }
+    } catch (error) {
+      res.status(500).json({ "Error": "Ocurrió un error" });
     }
+  }
+
+  async update(req, res) {
+    try {
+      const libro = req.body;
+      const [result] = await pool.query('UPDATE libros SET nombre = ?, autor = ?, categoria = ?, año_publicacion = ? WHERE isbn = ?', [libro.nombre, libro.autor, libro.categoria, libro.año_publicacion, libro.isbn]);
+      if (result.affectedRows > 0) {
+        res.json({ "message": `Libro con ISBN ${libro.isbn} actualizado exitosamente` });
+      } else {
+        res.status(404).json({ "Error": `No se encontró ningún libro con el ISBN ${libro.isbn}` });
+      }
+    } catch (error) {
+      res.status(500).json({ "Error": "Ocurrió un error" });
+    }
+  }
 }
 
 export const librosController = new LibrosController();

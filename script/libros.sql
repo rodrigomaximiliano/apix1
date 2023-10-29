@@ -24,26 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `libros`
---
 
-CREATE TABLE `libros` (
-  `id` int(11) NOT NULL,
-  `nombre` varchar(30) DEFAULT NULL,
-  `autor` varchar(30) DEFAULT NULL,
-  `categoria` varchar(30) DEFAULT NULL,
-  `año_publicacion` date DEFAULT NULL,
-  `isbn` varchar(13) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `libros`
---
-
-INSERT INTO `libros` (`id`, `nombre`, `autor`, `categoria`, `año_publicacion`, `isbn`) VALUES
-(1, 'Libro 1', 'Autor 1', 'Categoría 1', '2000-01-01', 'ISBN123456789'),
-(2, 'Libro 2', 'Autor 2', 'Categoría 2', '2005-05-15', 'ISBN098765432'),
-(3, 'Libro 3', 'Autor 3', 'Categoría 1', '2010-12-31', 'ISBN111222333');
 
 --
 -- Índices para tablas volcadas

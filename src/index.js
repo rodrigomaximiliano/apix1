@@ -1,16 +1,15 @@
 import express from 'express';
 import morgan from 'morgan';
-import router from './routes.js';
+import { router } from './routes.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-
+app.set('port', 3000); // Cambia 'app set' a 'app.set'
 
 app.use(morgan('dev'));
-app.use(express.json());//correción
-app.use('/api', router);
+app.use(express.json());
+app.use(router);
 
-app.listen(PORT, () => {
-    console.log(`Servidor en ejecución en el puerto ${PORT}`);
+app.listen(app.get('port'), () => {
+  console.log(`Server on port ${app.get('port')}`); // Utiliza comillas inversas para la interpolación de cadenas
 });
